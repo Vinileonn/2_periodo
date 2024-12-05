@@ -58,14 +58,15 @@ struct mundo_t {
   struct coordenada_t tamanhoMundo;
   int relogio;
   int missoesRealizadas;
-  int eventosTratados; 
+  int eventosTratados;
+  int minMissoes;
+  int maxMissoes; 
 };
 
 struct evento_t {
   struct heroi_t *heroi;
   struct base_t *base;
   struct missao_t *missao;
-  int tipo;
 };
 
 /*
@@ -75,27 +76,24 @@ e destruir de estruturas
 ===================================
 */
 
-struct heroi_t *criaHeroi(int ID, struct cjto_t *habilidades, int paciencia,
-                          int velocidade, int local);
+struct heroi_t *criaHeroi(int ID, int local);
 
 struct heroi_t *destroiHeroi(struct heroi_t *h);
 
-struct base_t *criaBase(int ID, int lotacao, struct cjto_t *presentes, struct lista_t *espera,
-                         struct coordenada_t local, int distanciaProxMissao);
+struct base_t *criaBase(int ID, int tamanhoMundo);
 
 struct base_t *destroiBase(struct base_t *b);
 
-struct missao_t *criaMissao(int ID, struct cjto_t *habilidades, int perigo,
-                            struct coordenada_t local);
+struct missao_t *criaMissao(int ID, int tamanhoMundo);
 
 struct missao_t *destroiMissao(struct missao_t *m);
 
-struct mundo_t *criaMundo(int nHerois, struct heroi_t *herois, int nBases, struct base_t *bases,
-                          int nMissoes, struct missao_t *missoes, struct coordenada_t tamanhoMundo);
+struct mundo_t *criaMundo(int nHerois, struct heroi_t **herois, int nBases, struct base_t **bases,
+                          int nMissoes, struct missao_t **missoes, struct coordenada_t tamanhoMundo);
 
 struct mundo_t *destroiMundo(struct mundo_t *m);
 
-struct evento_t *criaEvento(struct heroi_t *heroi, struct base_t *base, struct missao_t *missao, int tipo);
+struct evento_t *criaEvento(struct heroi_t *heroi, struct base_t *base, struct missao_t *missao);
 
 struct evento_t *destroiEvento(struct evento_t *e);
 
@@ -112,7 +110,7 @@ void inicializaHerois(int relogio, struct mundo_t *m, struct fprio_t *LEF);
 void inicializaMissoes(int relogio, struct mundo_t *m, struct fprio_t *LEF, int FimDoMundo);
 
 //agenda o fim da simulação.
-void agendaFim(int relogio, struct fprio_t *LEF, int fimDoMundo);
+void agendaFim(struct fprio_t *LEF, int FimDoMundo);
 
 /*
 ===================================
@@ -136,18 +134,18 @@ void avisa(int relogio, struct base_t *base, struct fprio_t *LEF);
 void entra(int relogio, struct heroi_t *heroi, struct base_t *base, struct fprio_t *LEF);
 
 //O herói H sai da base B.
-void sai(int relogio, struct heroi_t *heroi, struct base_t *base, struct fprio_t *LEF);
+void sai(int relogio, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *LEF);
 
 //O herói H se desloca para uma base D.
-void viaja(int relogio, struct heroi_t *heroi, struct base_t *destino, struct fprio_t *LEF);
+void viaja(int relogio, struct heroi_t *heroi, struct base_t *base, struct mundo_t *mundo, struct fprio_t *LEF);
 
 //O herói H morre no instante T.
 void morre(int relogio, struct heroi_t *heroi, struct base_t *base, struct fprio_t *LEF);
 
 //Uma missão M é disparada no instante T.
-void missao(int relogio, struct missao_t *missao, struct fprio_t *LEF);
+void missao(int relogio, struct missao_t *missao, struct mundo_t *mundo, struct fprio_t *LEF);
 
 //Encerra a simulação no instante T.
-void fim(int relogio, struct fprio_t *LEF);
+void fim(int relogio, struct mundo_t *mundo, struct fprio_t *LEF);
 
 #endif
